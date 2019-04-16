@@ -14,15 +14,16 @@ template<class T, int MAX> bool Queue<T, MAX>::push(T val) {
 
 template<class T, int MAX> bool Queue<T, MAX>::pop(T& val) {
     if(isEmpty()) return false;
-    val = m_data(m_bottom);
+    val = m_data[m_bottom];
     m_bottom++;
     if(m_bottom==MAX) m_bottom=0;
-    if(m_bottom==m_next) m_isEmpty = false;
+    if(m_bottom==m_next) m_isEmpty = true;
     return true;
 }
 
 template<class T, int MAX> bool Queue<T, MAX>::peek(T& val) {
     if(isEmpty()) return false;
-    val = m_data(m_bottom);
+    val = m_data[m_bottom];
     return true;
 }
+

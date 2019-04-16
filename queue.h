@@ -3,7 +3,7 @@
 
 template<class T, int MAX> class Queue {
     private:
-    
+
     int m_bottom;   // first element in use -- next to be pulled
     int m_next;      // first free cell
     // note:  if m_next==m_bottom,  queue is empty or full, so...
