@@ -22,18 +22,17 @@ class PianoKeyboard {
 	bool m_keyChanged;
 	KeyVals m_key;
 	struct KeyTranslations { int keycode; KeyVals keyval; };
-	static KeyTranslations keyTranslations[1] = {
-/*
-		{7704, BDEMOA}, {7705,BNoAnimal}, {7706,BBird}, {7707,BDuck}, {7708,BFrog}, {7709,BDog},		// B0
-		{8214,BT8}, {8215,BT7}, {8216,BT6}, {8217,BT5}, {8218,BT4}, {8219,BT3}, {8220,BT2}, {8221,BT1},	// B2
-		{8471,BPlay},{8472,BRec},{8473,BStop},{8474,BVolDn},{8475,BVolUp},{8476,BTempoDn},{8477,BTempoUp},	// B3
-		{8726,BR8}, {8727,BR7}, {8728,BR6}, {8729,BR5}, {8730,BR4}, {8731,BR3}, {8732,BR2}, {8733, BR1},	// B4
-		{10774,KD5}, {10775,KCS5}, {11305,KF5}, {11306,KE5}, {11307,KDS5},										// K0, K1
-		{11286,KC5}, {11287,KB4}, {11288,KAS4}, {11289,KA4}, {11290,KGS4}, {11291,KG4}, {11292,KFS4}, {11293,KF4},	// K2
-		{11542,KE4}, {11543,KDS4}, {11544,KD4}, {11545,KCS4}, {11546,KC4}, {11547,KB3}, {11548,KAS3}, {11549,KA3},	// K3
-		{11798,KGS3}, {11799,KG3}, {11800,KFS3}, {11801,KF3}, {11802,KE3}, {11803,KDS3}, {11804,KD3}, {11805,KCS3},	// K4
-		{12054,KC3}, {12055,KB2}, {12056,KAS2}, {12057,KA2}, {12058,KGS2}, {12059,KG2}, {12060,KFS2}, {12061,KF2},
-*/		{32767,KNONE}
+	static KeyTranslations keyTranslations[67] = {
+		{7704, BDEMOA}, {7705,BNoAnimal}, {7706,BBird}, {7707,BDuck}, {7708,BFrog}, {7709,BDog},		// B0: 6 items
+		{8214,BT8}, {8215,BT7}, {8216,BT6}, {8217,BT5}, {8218,BT4}, {8219,BT3}, {8220,BT2}, {8221,BT1},	// B2: 8 items
+		{8471,BPlay},{8472,BRec},{8473,BStop},{8474,BVolDn},{8475,BVolUp},{8476,BTempoDn},{8477,BTempoUp},	// B3: 7 items
+		{8726,BR8}, {8727,BR7}, {8728,BR6}, {8729,BR5}, {8730,BR4}, {8731,BR3}, {8732,BR2}, {8733, BR1},	// B4: 8 items
+		{10774,KD5}, {10775,KCS5}, {11305,KF5}, {11306,KE5}, {11307,KDS5},										// K0, K1: 5 items
+		{11286,KC5}, {11287,KB4}, {11288,KAS4}, {11289,KA4}, {11290,KGS4}, {11291,KG4}, {11292,KFS4}, {11293,KF4},	// K2: 8 items
+		{11542,KE4}, {11543,KDS4}, {11544,KD4}, {11545,KCS4}, {11546,KC4}, {11547,KB3}, {11548,KAS3}, {11549,KA3},	// K3: 8 items
+		{11798,KGS3}, {11799,KG3}, {11800,KFS3}, {11801,KF3}, {11802,KE3}, {11803,KDS3}, {11804,KD3}, {11805,KCS3},	// K4: 8 items
+		{12054,KC3}, {12055,KB2}, {12056,KAS2}, {12057,KA2}, {12058,KGS2}, {12059,KG2}, {12060,KFS2}, {12061,KF2}, 	// K5: 8 items
+		{32767,KNONE}																								// 1 item
 	};
 
 	KeyVals keycodeToKeyVal(int keycode){
