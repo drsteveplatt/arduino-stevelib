@@ -45,6 +45,7 @@ PianoKeyboard::PianoKeyboard(): m_keyDown(false), m_key(KNONE), m_keyChanged(fal
   initStrobeLines(buttonStrobePorts);
 }
 
+
 inline int kbencode(int strobe, int dataLine) { return (strobe<<8) + dataLine; }
 
 // Strobe a set of strobes and report on the keys pressed.
@@ -53,7 +54,7 @@ inline int kbencode(int strobe, int dataLine) { return (strobe<<8) + dataLine; }
 //int lastKey = 0;
 //bool keyChanged;
 
-void PianoKeyboard::checkKeys(char prefix, int strobePorts[]) {
+void PianoKeyboard::checkKeys(int strobePorts[]) {
   int stat;
   int thisKey;
 
@@ -65,40 +66,26 @@ void PianoKeyboard::checkKeys(char prefix, int strobePorts[]) {
     for(int dataLine=0; dataPorts[dataLine]>=0; dataLine++) {
       // checking data lines...
       stat=digitalRead(dataPorts[dataLine]);
-      thisKey = kbencode(strobePorts[strobe],dataPorts[dataLine]);
+      thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
       if(stat==LOW && !m_keyDown) {
         // key hit, save value, mark as "hit", report results
-//        keyPressed = true;
-//        lastKey = thisKey;
-//        keyChanged = true;
 	    m_key = thisKey;
 	    m_keyDown = true;
 	    m_keyChanged = true;
-#if defined(DEBUG)
-        Serial << "Down: " << prefix << strobe << " " << dataLine << " " << thisKey
-//          << (stat==LOW?" LOW ":" HIGH ") << (keyPressed?"pressed ":"!pressed ")
-//          << lastKey << " " << thisKey
-          << endl;
-#endif
       } else if(stat==HIGH && m_keyDown && thisKey==m_key) {
         // key released, mark as unpressed and report the (saved) key as being up
         m_keyDown = false;
         m_keyChanged = true;
-#if defined(DEBUG)
-        Serial << "Up: " << prefix << strobe << " " << dataLine
- //         << (stat==LOW?" LOW ":" HIGH ") << (keyPressed?"pressed ":"!pressed ")
- //         << lastKey << " " << thisKey
-          << endl;
-#endif
       }
     } // end for dataPort
     digitalWrite(strobePorts[strobe], HIGH);
   } // end for strobe
 }
 
-//void loop() {
-//  checkKeys('K',keyStrobePorts);
-//  checkKeys('B',buttonStrobePorts);
-//}
-
+bool PianoKeyboard::pollForEvent() {
+	checkKeys(keyStrobePorts);
+	if(m_keyChanged) return true;
+	checkKeys(buttonStrobePorts);
+	return m_keyChanged;
+}
 
