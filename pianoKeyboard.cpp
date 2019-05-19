@@ -17,7 +17,7 @@
 
 // Port usage:
 //    D22-D29 (port PA, 0-7): eight data return lines
-//    D30-D33 (port PC, 7-4): four strobe lines for control keys
+//    D30-D34 (port PC, 7-3): five strobe lines for control buttons
 //    D42-D47 (port PL, 7-2): six strobe lines for keyboard
 #include <arduino.h>
 #include "pianoKeyboard.h"
