@@ -81,18 +81,12 @@ void PianoKeyboard::checkKeys(int strobePorts[], byte* bits) {
       thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
       if(stat==LOW && !isSet(bits, strobe, dataLine)) {
         // key hit, save value, mark as "hit", report results
-Serial.print("[LOW "); Serial.print(strobePorts[strobe]); Serial.print(" ");
-Serial.print(dataPorts[dataLine]); Serial.print(" ");
-Serial.print(kbencode(strobePorts[strobe],dataPorts[dataLine])); Serial.println("]");
 	    m_key = thisKey;
 	    m_keyDown = true;
 	    m_keyChanged = true;
 	    setBit(bits, strobe, dataLine);
       } else if(stat==HIGH && isSet(bits, strobe, dataLine)) {
         // key released, mark as unpressed and report the (saved) key as being up
-Serial.print("[HIGH "); Serial.print(strobePorts[strobe]); Serial.print(" ");
-Serial.print(dataPorts[dataLine]); Serial.print(" ");
-Serial.print(kbencode(strobePorts[strobe],dataPorts[dataLine])); Serial.println("]");
 		m_keyDown = false;
 		m_key = thisKey;
         m_keyChanged = true;
