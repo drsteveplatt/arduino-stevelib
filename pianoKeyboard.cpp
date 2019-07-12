@@ -78,15 +78,16 @@ void PianoKeyboard::checkKeys(int strobePorts[], byte* bits) {
     for(int dataLine=0; dataPorts[dataLine]>=0; dataLine++) {
       // checking data lines...
       stat=digitalRead(dataPorts[dataLine]);
-      thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
       if(stat==LOW && !isSet(bits, strobe, dataLine)) {
         // key hit, save value, mark as "hit", report results
+      	thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
 	    m_key = thisKey;
 	    m_keyDown = true;
 	    m_keyChanged = true;
 	    setBit(bits, strobe, dataLine);
       } else if(stat==HIGH && isSet(bits, strobe, dataLine)) {
         // key released, mark as unpressed and report the (saved) key as being up
+      	thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
 		m_keyDown = false;
 		m_key = thisKey;
         m_keyChanged = true;

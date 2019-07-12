@@ -52,7 +52,7 @@ class PianoKeyboard {
 	inline bool setBit(byte* bits, int strIndex, int bit) { bits[strIndex] |= (1<<bit); }
 	inline bool clearBit(byte* bits, int strIndex, int bit) { bits[strIndex] &= (~(1<<bit)); }
 	byte theKeyBits[6];
-	byte theButtonBits[4];
+	byte theButtonBits[5];
 	// translating a key to a keycode
 	struct KeyTranslations { int keycode; KeyVals keyval; };
 	KeyTranslations keyTranslations[NUMBUTTONS+NUMKEYS+1] = {
