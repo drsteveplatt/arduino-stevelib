@@ -20,7 +20,10 @@
 //    D30-D34 (port PC, 7-3): five strobe lines for control buttons
 //    D42-D47 (port PL, 7-2): six strobe lines for keyboard
 #include "pianoKeyboard.h"
+#include <streaming.h>
 
+// DATAPORT -- the hardware port we're using for the sense lines
+#define DATAPORT	PORTA
 static int dataPorts[] = {22, 23, 24, 25, 26, 27, 28, 29, -1};
 static int keyStrobePorts[] = {42, 43, 44, 45, 46, 47, -1};
 static int buttonStrobePorts[] = {30, 31, 32, 33, 34, -1};
@@ -44,8 +47,17 @@ PianoKeyboard::PianoKeyboard(): m_keyDown(false), m_key(KNONE), m_keyChanged(fal
   initStrobeLines(buttonStrobePorts);
   for(int i=0; i<6; i++) theKeyBits[i] = 0;
   for(int i=0; i<4; i++) theButtonBits[i] = 0;
-}
+  }
 
+void PianoKeyboard::showBits(byte* vec, int vecSize) {
+	for(int i=0; i<vecSize; i++) {
+		for(int j=7; j>=0; j--) {
+			Serial << ( (vec[i]&(1<<j))>0 ? "1" : "0") ;
+		}
+		Serial << " ";
+	}
+	Serial << endl;
+}
 
 inline int kbencode(int strobe, int dataLine) { return (strobe<<8) + dataLine; }
 
@@ -66,34 +78,38 @@ inline int kbencode(int strobe, int dataLine) { return (strobe<<8) + dataLine; }
 //		Subsequent calls to pollForEvent() will clear the previously saved key/updown
 //			(they will not be available to key() and keyDown().  The states will still be
 //			preserved internally.
-void PianoKeyboard::checkKeys(int strobePorts[], byte* bits) {
+void PianoKeyboard::checkKeys(int strobePorts[], byte bits[]) {
   int thisKey;
   byte stat;
+  byte senseVal;
 
   m_keyChanged = false;
   // perform one cycle of strobing all strobe lines and sensing all data lines for activity
   for(int strobe=0; strobePorts[strobe]>=0; strobe++) {
     // Force the strobe low to actiate it, then check all of the data lines
     digitalWrite(strobePorts[strobe], LOW);
-    for(int dataLine=0; dataPorts[dataLine]>=0; dataLine++) {
-      // checking data lines...
-      stat=digitalRead(dataPorts[dataLine]);
-      if(stat==LOW && !isSet(bits, strobe, dataLine)) {
-        // key hit, save value, mark as "hit", report results
-      	thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
-	    m_key = thisKey;
-	    m_keyDown = true;
-	    m_keyChanged = true;
-	    setBit(bits, strobe, dataLine);
-      } else if(stat==HIGH && isSet(bits, strobe, dataLine)) {
-        // key released, mark as unpressed and report the (saved) key as being up
-      	thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
+	// quick check of all of the bits -- if they haven't changed, don't bother with
+	// the line-by-line scan
+	senseVal = PINA;
+	for(int dataLine=0; dataPorts[dataLine]>=0; dataLine++) {
+	  // checking data lines...
+	  stat=digitalRead(dataPorts[dataLine]);
+	  if(stat==LOW && !isSet(bits, strobe, dataLine)) {
+		// key hit, save value, mark as "hit", report results
+		thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
+		m_key = thisKey;
+		m_keyDown = true;
+		m_keyChanged = true;
+		setBit(bits, strobe, dataLine);
+	  } else if(stat==HIGH && isSet(bits, strobe, dataLine)) {
+		// key released, mark as unpressed and report the (saved) key as being up
+		thisKey = keycodeToKeyVal(kbencode(strobePorts[strobe],dataPorts[dataLine]));
 		m_keyDown = false;
 		m_key = thisKey;
-        m_keyChanged = true;
-        clearBit(bits, strobe, dataLine);
-      }
-    } // end for dataPort
+		m_keyChanged = true;
+		clearBit(bits, strobe, dataLine);
+	  }
+	} // end for dataPort
     digitalWrite(strobePorts[strobe], HIGH);
   } // end for strobe
 }

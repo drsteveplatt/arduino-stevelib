@@ -90,6 +90,7 @@ class PianoKeyboard {
 	bool pollForEvent();
 	bool keyDown() { return m_keyDown; }
 	KeyVals key() { return m_key; }
+	void showBits(byte*, int vecSize);
 
 	private:
 	void checkKeys(int* strobeports, byte* bits);
